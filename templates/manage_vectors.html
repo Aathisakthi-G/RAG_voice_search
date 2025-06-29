@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Document Data</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 50px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      position: sticky;
+      top: 0;
+      background-color: #f5f7fa;
+      z-index: 10;
+      padding: 1rem 0;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #2d3748;
+      margin: 0;
+    }
+
+    .back-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      background-color: #edf2f7;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .back-button:hover {
+      background-color: #e2e8f0;
+    }
+
+    .summary {
+      margin-bottom: 1.5rem;
+      background-color: #edf2f7;
+      padding: 0.75rem;
+      border-radius: 4px;
+      position: sticky;
+      top: 70px;
+      z-index: 5;
+    }
+
+    .file-cards-container {
+      margin-bottom: 2rem;
+    }
+
+    .file-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .file-header {
+      padding: 1rem;
+      background-color: #f7fafc;
+      border-bottom: 1px solid #edf2f7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: bold;
+      color: #2d3748;
+    }
+
+    .file-info {
+      font-size: 0.875rem;
+      color: #718096;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .delete-file-btn {
+      background-color: #f56565;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .delete-file-btn:hover {
+      background-color: #e53e3e;
+    }
+
+    .toggle-entries-btn {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .toggle-entries-btn:hover {
+      background-color: #3182ce;
+    }
+
+    .entries-container {
+      display: none;
+      padding: 0 1rem;
+    }
+
+    .entry-item {
+      padding: 1rem;
+      border-bottom: 1px solid #edf2f7;
+      transition: background-color 0.2s;
+    }
+
+    .entry-item:hover {
+      background-color: #f7fafc;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .entry-id {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      flex-shrink: 0;
+    }
+
+    .entry-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .delete-entry-btn {
+      background-color: #f56565;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background-color 0.2s;
+    }
+
+    .delete-entry-btn:hover {
+      background-color: #e53e3e;
+    }
+
+    .view-entry-btn {
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background-color 0.2s;
+    }
+
+    .view-entry-btn:hover {
+      background-color: #3182ce;
+    }
+
+    .entry-text {
+      font-size: 0.875rem;
+      color: #4a5568;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #a0aec0;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h2 {
+      color: #4a5568;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #718096;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      color: #2d3748;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #a0aec0;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .entry-full-text {
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #4a5568;
+      background-color: #f7fafc;
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid #edf2f7;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    /* Back to top button */
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4299e1;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .back-to-top:hover {
+      background-color: #3182ce;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-database"></i> Manage Document Data</h1>
+      <a href="{{ url_for('index') }}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Assistant
+      </a>
+    </div>
+
+    {% if files %}
+      <div class="summary">
+        <p>Showing all {{ total_count }} entries from {{ files|length }} files</p>
+      </div>
+
+      <div class="file-cards-container">
+        {% for file in files %}
+          <div class="file-card">
+            <div class="file-header">
+              <div class="file-title">
+                <i class="fas fa-file-alt"></i> {{ file.file_name }}
+              </div>
+              <div class="file-info">
+                {{ file.count }} chunks | Hash: {{ file.file_hash[:8] }}...
+              </div>
+              <div class="file-actions">
+                <button class="toggle-entries-btn" onclick="toggleEntries('{{ file.file_hash }}')">
+                  <i class="fas fa-chevron-down"></i> Show Entries
+                </button>
+                <button class="delete-file-btn" onclick="deleteFile('{{ file.file_hash }}', '{{ file.file_name }}')">
+                  <i class="fas fa-trash"></i> Delete File
+                </button>
+              </div>
+            </div>
+            <div id="entries-{{ file.file_hash }}" class="entries-container">
+              {% for entry in file.entries %}
+                <div class="entry-item">
+                  <div class="entry-header">
+                    <div class="entry-id">ID: {{ entry.id[:8] }}...</div>
+                    <div class="entry-actions">
+                      <button class="view-entry-btn" onclick="viewEntry('{{ entry.id }}')">
+                        <i class="fas fa-eye"></i> View
+                      </button>
+                      <button class="delete-entry-btn" onclick="deleteEntry('{{ entry.id }}')">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div class="entry-text">
+                    {{ entry.preview }}
+                  </div>
+                  <input type="hidden" id="full-text-{{ entry.id }}" value="{{ entry.full_text }}">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-database"></i>
+        <h2>No Vector Data Found</h2>
+        <p>There are no documents uploaded to the system yet. Upload documents from the main page to see them here.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Entry view modal -->
+  <div id="entry-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Entry Details</h3>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="entry-id-display" class="entry-id">ID: </div>
+        <div class="entry-full-text" id="entry-full-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleEntries(fileHash) {
+      const entriesContainer = document.getElementById(`entries-${fileHash}`);
+      const toggleButton = entriesContainer.parentElement.querySelector('.toggle-entries-btn');
+      
+      if (entriesContainer.style.display === 'block') {
+        entriesContainer.style.display = 'none';
+        toggleButton.innerHTML = '<i class="fas fa-chevron-down"></i> Show Entries';
+      } else {
+        entriesContainer.style.display = 'block';
+        toggleButton.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Entries';
+      }
+    }
+
+    function viewEntry(entryId) {
+      const entryText = document.getElementById(`full-text-${entryId}`).value;
+      document.getElementById('entry-id-display').textContent = `ID: ${entryId}`;
+      document.getElementById('entry-full-text').textContent = entryText;
+      document.getElementById('entry-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('entry-modal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('entry-modal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    function deleteEntry(entryId) {
+      if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+        fetch('/delete_vector_entry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            entry_id: entryId
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Entry deleted successfully');
+            location.reload();
+          } else {
+            alert('Failed to delete entry: ' + (data.error || 'Unknown error'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to delete entry: ' + error);
+        });
+      }
+    }
+
+    function deleteFile(fileHash, fileName) {
+      if (confirm(`Are you sure you want to delete all entries for file "${fileName}"? This action cannot be undone.`)) {
+        fetch('/delete_vector_file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            file_hash: fileHash
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('File entries deleted successfully');
+            location.reload();
+          } else {
+            alert('Failed to delete file entries: ' + (data.error || 'Unknown error'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Failed to delete file entries: ' + error);
+        });
+      }
+    }
+
+    // Back to top button functionality
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html> 

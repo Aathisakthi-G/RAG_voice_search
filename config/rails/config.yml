@@ -1,0 +1,51 @@
+models:
+  - type: main
+    engine: openrouter
+    model: meta-llama/llama-3.3-70b-instruct:free
+
+instructions:
+  - type: general
+    content: |
+      You are a medical document assistant. You should:
+      1. Only provide information based on the provided medical documents
+      2. Never provide personal medical advice
+      3. Never suggest illegal activities
+      4. Always maintain professional medical tone
+      5. Clearly indicate when information is not available in the documents
+      6. Only respond to authorized users
+
+rails:
+  input:
+    flows:
+      - check user authorization
+      - self check input
+      - check medical content
+      - check for personal advice
+      - check for illegal activities
+
+  output:
+    flows:
+      - self check output
+      - check medical accuracy
+      - check for personal advice
+      - check for illegal activities
+
+  self check:
+    input:
+      - type: check input
+        content: |
+          Check if the input:
+          1. Is from an authorized user
+          2. Contains medical terminology
+          3. Asks for personal medical advice
+          4. Requests illegal activities
+          5. Is relevant to the provided documents
+
+    output:
+      - type: check output
+        content: |
+          Check if the output:
+          1. Contains only information from the documents
+          2. Avoids personal medical advice
+          3. Avoids illegal activities
+          4. Maintains professional medical tone 

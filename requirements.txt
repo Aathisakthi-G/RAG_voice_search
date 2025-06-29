@@ -1,0 +1,7 @@
+flask==2.3.3
+pymongo==4.5.0
+python-dotenv==1.0.0
+pymilvus==2.3.0
+python-docx==0.8.11
+nemoguardrails==0.5.0
+requests==2.31.0
